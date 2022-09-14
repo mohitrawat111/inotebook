@@ -2,16 +2,16 @@ const moongose = require('mongoose');
 
 const NotesSchema = new Schema({
     title: {
-        type: string,
+        type: String,
         required: true
     },
     description: {
-        type: string,
+        type: String,
         required: true,
 
     },
     tag: {
-        type: string,
+        type: String,
         dafault: "General"
     },
     date: {
