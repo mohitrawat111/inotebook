@@ -21,5 +21,5 @@ const UserSchema = new Schema({
 
 });
 const User = moongose.model('user', UserSchema);
-User.createIndexes();
+
 module.exports = User
