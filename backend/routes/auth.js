@@ -4,9 +4,10 @@ const User = require('../models/User')
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+const fetchuser = require('../middleware/fetchuser')
 
 const JWT_SECRET = 'Mohitisagoodb$y';
-//  Create a User using: POST  "/api/auth/createuser". No login required
+// ROUTE1: Create a User using: POST  "/api/auth/createuser". No login required
 
 
 router.post('/createuser', [
@@ -60,7 +61,7 @@ router.post('/createuser', [
     }
 })
 
-//  Aunthenticate User usingusing: POST  "/api/auth/login". No login required
+// ROUTE2: Aunthenticate User usingusing: POST  "/api/auth/login". No login required
 
 router.post('/login', [
 
@@ -77,7 +78,7 @@ router.post('/login', [
     const { email, password } = req.body;
     try {
         let user = await User.findOne({ email });
-        console.log(user);//(output:-null means email exist nahi krti.if (!user)  means email nahi hai toh ye kro)
+        // console.log(user);//(output:-null means email exist nahi krti.if (!user)  means email nahi hai toh ye kro)
         if (!user) {
             return res.status(400).json({ error: "Please try to login with correct credentials" })
         }
@@ -93,12 +94,32 @@ router.post('/login', [
         }
         // console.log(data);//userid comes from database,conform krne klye log kiya taki sure ho ki data me user id he ari hai user ki.
         const authToken = jwt.sign(data, JWT_SECRET);
+        // const data1 = jwt.verify(authToken, JWT_SECRET)// this is not for this endpoint just for learning how jwt verfiy works
+        // console.log(data1.user.id);// this is not for this endpoint
         res.json({ authToken })
+
 
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error");
     }
 
-})
+
+});
+
+
+// ROUTE2: Get loggedin User details using: POST  "/api/auth/getuser".  login required
+
+router.post('/getuser', fetchuser, async (req, res) => {
+
+
+    try {
+        userId = req.user.id;
+        const user = await User.findById(userId).select("-password");
+        res.send(user);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+});
 module.exports = router;
