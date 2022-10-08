@@ -86,9 +86,13 @@ const NoteState = (props) => {
     });
     const json = await response.json();
     console.log(json)
-
+    //to update the front end we can also use:-
+    // getNotes();
+    //or
     //logic to edit in client 
     let newNotes = JSON.parse(JSON.stringify(notes))
+    // let newNotes = notes.slice();
+    //Reason why we are writing let newnote=JSON.Parse(JSON.stringify(notes))  is  ....  He just want to have a copy of notes to newnote for that he can just write let newnote=note  , but what happens is we want page to render after updating the values , so that we can see the change in UI . But if you just use newnote=note react cant identify that there is some change happening so it will not render the page so , if we write as harry bhai said , react can observe the change or else we can simply write let newnote=notes.slice()   . 
     for (let index = 0; index < newNotes.length; index++) {
       const element = newNotes[index];
       if (element._id === id) {
