@@ -69,6 +69,7 @@ router.post('/login', [
     body('password', 'Password must be 5 characters').exists(),
 
 ], async (req, res) => {
+    let success = false;
     // If there are error, return bad request and the errors 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -80,12 +81,14 @@ router.post('/login', [
         let user = await User.findOne({ email });
         // console.log(user);//(output:-null means email exist nahi krti.if (!user)  means email nahi hai toh ye kro)
         if (!user) {
-            return res.status(400).json({ error: "Please try to login with correct credentials" })
+            success = false
+            return res.status(400).json({ success, error: "Please try to login with correct credentials" })
         }
 
         const passwordCompare = await bcrypt.compare(password, user.password);
         if (!passwordCompare) {
-            return res.status(400).json({ error: "Please try to login with correct credentials" })
+            success = false
+            return res.status(400).json({ success, error: "Please try to login with correct credentials" })
         }
         const data = {
             user: {
@@ -96,7 +99,8 @@ router.post('/login', [
         const authToken = jwt.sign(data, JWT_SECRET);
         // const data1 = jwt.verify(authToken, JWT_SECRET)// this is not for this endpoint just for learning how jwt verfiy works
         // console.log(data1.user.id);// this is not for this endpoint
-        res.json({ authToken })
+        success = true
+        res.json({ success, authToken })
 
 
     } catch (error) {
