@@ -20,9 +20,9 @@ export const Login = (props) => {
         console.log(json)
         if (json.success) {
             //save the auth token and redirect
-            localStorage.setItem('token', json.authtoken);
-            navigate("/")
+            localStorage.setItem('token', json.authToken);//Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client replace authtoken to authToken
             props.showAlert("Logged In Successfully", "success")
+            navigate("/")
         }
         else {
             props.showAlert("Invalid Credentials", "danger")
@@ -32,7 +32,8 @@ export const Login = (props) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value })
     }
     return (
-        <div>
+        <div className="mt-2">
+            <h2 className="my-2">Login to continue to iNotebook</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email address</label>
