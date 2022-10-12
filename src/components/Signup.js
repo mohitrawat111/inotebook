@@ -4,29 +4,35 @@ import { useNavigate } from 'react-router-dom';
 export const Signup = (props) => {
     const [credentials, setCredentials] = useState({ name: "", email: "", password: "", cpassword: "" })
     let navigate = useNavigate();
-    const { name, email, password } = credentials
+    const { name, email, password, cpassword } = credentials
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-        const response = await fetch('http://localhost:5000/api/auth/createuser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+        if (cpassword === password) {
+            const response = await fetch('http://localhost:5000/api/auth/createuser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
 
-            },
-            body: JSON.stringify({ name, email, password })
-        });
-        const json = await response.json();
-        console.log(json)
-        if (json.success) {
-            //save the auth token and redirect
-            localStorage.setItem('token', json.authToken);
-            navigate("/login")
-            props.showAlert("Account Created Successfully ", "success")
+                },
+                body: JSON.stringify({ name, email, password })
+            });
+            const json = await response.json();
+            console.log(json)
 
+
+            if (json.success) {
+                //save the auth token and redirect
+                localStorage.setItem('token', json.authToken);
+                navigate("/")
+                props.showAlert("Account Created Successfully ", "success")
+
+            }
+            else {
+                props.showAlert("Invalid details", "danger")
+            }
         }
         else {
-            props.showAlert("Invalid details", "danger")
+            props.showAlert("Confirm your password", "danger")
         }
     }
     const onchange = (e) => {
